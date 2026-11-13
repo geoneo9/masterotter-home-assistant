@@ -1,0 +1,41 @@
+# MasterOtter Server as a Home Assistant OS add-on.
+#
+# A LOCAL add-on: the folder (with server/ populated by installers/haos-addon/build.mjs) is copied
+# to /addons/masterotter on the HA host, where the Supervisor builds the Dockerfile natively for
+# the machine's architecture. aarch64 covers ODROID N2+/RPi4; amd64 covers generic boxes.
+name: MasterOtter Server
+version: "0.5.253.169"
+slug: masterotter
+description: Your personal media server. Point it at your films and shows and watch anywhere.
+url: https://masterotter.com
+arch:
+  - aarch64
+  - amd64
+init: false
+# Host networking on purpose. Behind Docker's bridge the server can neither see the LAN nor its
+# own reachable port, which spawned an advertise_host/external_port/port-mapping triangle that
+# proved genuinely unconfigurable in practice. On the host network the server binds the machine's
+# real interfaces and enumerates real LAN addresses.
+host_network: true
+# The Supervisor only accepts the literal [PORT:n] token here — it cannot follow the "port"
+# option. With a non-default port the Open Web UI button goes stale; the add-on log prints the
+# real URL on every start.
+webui: http://[HOST]:[PORT:32480]
+map:
+  - share:rw
+  - media:rw
+# A Home Assistant backup stops the add-on first (the database is a live SQLite file with a
+# journal; a hot copy can be inconsistent) and skips the transcode folder, which is rebuilt.
+backup: cold
+backup_exclude:
+  - masterotter/transcode-tmp
+options:
+  tmdb_api_key: ""
+  download_demo_library: false
+  port: 32480
+  external_port: 32480
+schema:
+  tmdb_api_key: str?
+  download_demo_library: bool?
+  port: int?
+  external_port: int?
