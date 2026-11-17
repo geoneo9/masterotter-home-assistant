@@ -4,7 +4,7 @@
 # to /addons/masterotter on the HA host, where the Supervisor builds the Dockerfile natively for
 # the machine's architecture. aarch64 covers ODROID N2+/RPi4; amd64 covers generic boxes.
 name: MasterOtter Server
-version: "0.5.253.169"
+version: "0.5.254.170"
 slug: masterotter
 description: Your personal media server. Point it at your films and shows and watch anywhere.
 url: https://masterotter.com
